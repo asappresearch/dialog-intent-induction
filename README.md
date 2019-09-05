@@ -31,3 +31,4 @@ To run k-means baseline
 ```
 python train_qt.py --data-path  data/airlines_processed.csv --pre-epoch 10 --view1-col first_utterance --view2-col context --scenarios view1
 ```
+- to train on askubuntu, replace `airlines` with `askubuntu` in the above command-line
