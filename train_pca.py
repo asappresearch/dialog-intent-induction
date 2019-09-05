@@ -29,7 +29,7 @@ from model.utils import *
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data-path', type=str, default='./data/airlines_500_mergedb.csv')
+    parser.add_argument('--data-path', type=str, default='./data/airlines_processed.csv')
     parser.add_argument('--model', type=str, choices=['view1pca', 'view2pca', 'wholeconvpca', 'mvsc'], default='view1pca')
     parser.add_argument('--pca-dims', type=int, default=600)
 

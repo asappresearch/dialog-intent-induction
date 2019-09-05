@@ -59,7 +59,7 @@ def calc_prec_rec_f1_acc(preds, golds):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data-path', type=str, default='./data/airlines_500_mergedb.csv')
+    parser.add_argument('--data-path', type=str, default='./data/airlines_processed.csv')
     parser.add_argument('--glove-path', type=str, default='./data/glove.840B.300d.txt')
     parser.add_argument('--pre-epoch', type=int, default=5)
     parser.add_argument('--pt-batch', type=int, default=100)

@@ -72,7 +72,7 @@ def calc_centroids(latent_zs, assignments, n_cluster):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data-path', type=str, default='./data/airlines_500_mergedb.csv')
+    parser.add_argument('--data-path', type=str, default='./data/airlines_processed.csv')
     parser.add_argument('--glove-path', type=str, default='./data/glove.840B.300d.txt')
     parser.add_argument('--pre-model', type=str, choices=['ae', 'qt'], default='qt')
     parser.add_argument('--pre-epoch', type=int, default=0)
