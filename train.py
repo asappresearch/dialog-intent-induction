@@ -72,7 +72,7 @@ def calc_centroids(latent_zs, assignments, n_cluster):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data-path', type=str, default='./data/airlines_500_merged.csv')
+    parser.add_argument('--data-path', type=str, default='./data/airlines_500_mergedb.csv')
     parser.add_argument('--glove-path', type=str, default='./data/glove.840B.300d.txt')
     parser.add_argument('--pre-model', type=str, choices=['ae', 'qt'], default='qt')
     parser.add_argument('--pre-epoch', type=int, default=0)
@@ -84,9 +84,9 @@ def main():
 
     parser.add_argument('--save-model-path', type=str)
 
-    parser.add_argument('--view1-col', type=str, default='view1_col')
-    parser.add_argument('--view2-col', type=str, default='view2_col')
-    parser.add_argument('--label-col', type=str, default='cluster_id')
+    parser.add_argument('--view1-col', type=str, default='view1')
+    parser.add_argument('--view2-col', type=str, default='view2')
+    parser.add_argument('--label-col', type=str, default='tag')
     args = parser.parse_args()
 
     np.random.seed(args.seed)

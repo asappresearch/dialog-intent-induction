@@ -29,16 +29,16 @@ from model.utils import *
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data-path', type=str, default='./data/airlines_500_merged.csv')
+    parser.add_argument('--data-path', type=str, default='./data/airlines_500_mergedb.csv')
     parser.add_argument('--model', type=str, choices=['view1pca', 'view2pca', 'wholeconvpca', 'mvsc'], default='view1pca')
     parser.add_argument('--pca-dims', type=int, default=600)
 
     parser.add_argument('--no-idf', action='store_true')
     parser.add_argument('--mvsc-no-unk', action='store_true', help='only feed non-unk data to MVSC (to avoid oom)')
 
-    parser.add_argument('--view1-col', type=str, default='view1_col')
-    parser.add_argument('--view2-col', type=str, default='view2_col')
-    parser.add_argument('--label-col', type=str, default='cluster_id')
+    parser.add_argument('--view1-col', type=str, default='view1')
+    parser.add_argument('--view2-col', type=str, default='view2')
+    parser.add_argument('--label-col', type=str, default='tag')
     args = parser.parse_args()
     run(**args.__dict__)
 

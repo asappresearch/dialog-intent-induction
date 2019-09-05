@@ -59,16 +59,16 @@ def calc_prec_rec_f1_acc(preds, golds):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data-path', type=str, default='./data/airlines_500_merged.csv')
+    parser.add_argument('--data-path', type=str, default='./data/airlines_500_mergedb.csv')
     parser.add_argument('--glove-path', type=str, default='./data/glove.840B.300d.txt')
     parser.add_argument('--pre-epoch', type=int, default=5)
     parser.add_argument('--pt-batch', type=int, default=100)
     parser.add_argument('--scenarios', type=str, default='view1,view2,concatviews,wholeconv', help='comma-separated, from [view1|view2|concatviews|wholeconv|mvsc]')
     parser.add_argument('--mvsc-no-unk', action='store_true', help='only feed non-unk data to MVSC (to avoid oom)')
 
-    parser.add_argument('--view1-col', type=str, default='view1_col')
-    parser.add_argument('--view2-col', type=str, default='view2_col')
-    parser.add_argument('--label-col', type=str, default='cluster_id')
+    parser.add_argument('--view1-col', type=str, default='view1')
+    parser.add_argument('--view2-col', type=str, default='view2')
+    parser.add_argument('--label-col', type=str, default='tag')
     args = parser.parse_args()
 
     print('loading dataset')
