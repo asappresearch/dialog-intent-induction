@@ -2,7 +2,7 @@ Code and data for paper ["Dialog Intent Induction with Deep Multi-View Clusterin
 
 Data is available in the sub-directory [data](data), with a specific [LICENSE](data/LICENSE) file.
 
-To run AVK-means
+To run AV-Kmeans
 ----------------
 
 - decompress the data files in `data`folder
