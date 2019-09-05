@@ -1,8 +1,9 @@
-There are two datasets in this folder:
+There are four dataset files in this folder:
 
-- airlines_raw_merged.csv.bz2 and airlines_500_mergedb.csv.bz2 are derived from Kaggle 'Customer Support on Twitter' dataset, https://www.kaggle.com/thoughtvector/customer-support-on-twitter,
+- airlines_raw.csv.bz2 and airlines_processed.csv.bz2 are derived from Kaggle 'Customer Support on Twitter' dataset,
+https://www.kaggle.com/thoughtvector/customer-support-on-twitter,
 which is available under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) license,
 https://creativecommons.org/licenses/by-nc-sa/4.0/
 
-- askubuntu_raw_mergedb.csv.bz2 and askubuntu_raw_mergedb are derived from Stack Exchange Data Dump, https://archive.org/details/stackexchange, which is provided
-under a Creative Common Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0) license, https://creativecommons.org/licenses/by-sa/3.0/
+- askubuntu_raw.csv.bz2 and askubuntu_processed.csv.bz2 are derived from Stack Exchange Data Dump, https://archive.org/details/stackexchange,
+which is provided under a Creative Common Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0) license, https://creativecommons.org/licenses/by-sa/3.0/
