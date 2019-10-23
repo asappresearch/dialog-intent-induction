@@ -2,7 +2,7 @@ Code and data for paper ["Dialog Intent Induction with Deep Multi-View Clusterin
 
 Data is available in the sub-directory [data](data), with a specific [LICENSE](data/LICENSE) file.
 
-# Concept: Dialog Intent Induction
+# Dialog Intent Induction
 
 ## Designing user intents is hard
 
@@ -37,10 +37,14 @@ Consider two dialogs for FindAirPods:
 
 We propose the AV-Kmeans algorithm, to jointly learn the encoder and the cluster assignment:
 
-<img src="images/avkmeans_pseudocode.png" width="350" /><img src="images/avkmeans_graph.png" width="350" />
+<img src="images/avkmeans_pseudocode.png" width="350" />    <img src="images/avkmeans_graph.png" width="350" />
 
 - The encoder is fixed for clustering, and updated for classification
 - we use prototypical loss for the classification task
+
+# New datasets
+
+
 
 # Usage
 
