@@ -37,7 +37,7 @@ Consider two dialogs for FindAirPods:
 
 We propose the AV-Kmeans algorithm, to jointly learn the encoder and the cluster assignment:
 
-<img src="images/avkmeans_pseudocode.png" width="350" />    <img src="images/avkmeans_graph.png" width="350" />
+<img src="images/avkmeans_pseudocode.png" width="350" /> &nbsp; <img src="images/avkmeans_graph.png" width="350" />
 
 - The encoder is fixed for clustering, and updated for classification
 - we use prototypical loss for the classification task
