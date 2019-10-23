@@ -46,4 +46,4 @@ python train_qt.py --data-path  data/airlines_processed.csv --pre-epoch 10 --vie
 - A key challenge is to learn an effective con- versation encoder, in an unsupervised way
 - ... such that distance in embedding space relates closely to human perceived semantic distance
 
-[images/intents_acad_to_indust.png]
+!(images/intents_acad_to_indust.png)
