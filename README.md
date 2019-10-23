@@ -2,6 +2,48 @@ Code and data for paper ["Dialog Intent Induction with Deep Multi-View Clusterin
 
 Data is available in the sub-directory [data](data), with a specific [LICENSE](data/LICENSE) file.
 
+# Concept: Dialog Intent Induction
+
+## Designing user intents is hard
+
+- Existing dialog classification work assumes that target intents are given
+- In industry, a classifier may have hundreds of intents
+- their discovery involves considerable human effort
+
+## Automatic discovery of dialog intents from data
+
+- We aim to automatically cluster conversations into intents
+- A key challenge is to learn an effective conversation encoder, in an unsupervised way
+- ... such that distance in embedding space relates closely to human perceived semantic distance
+
+![intent design](images/intents_acad_vs_indust.png)
+
+# Multiview Clustering
+
+Consider two dialogs for FindAirPods:
+
+![dialog examples](images/example_dialogs.png)
+
+- The user query utterances are lexically and syntactically dissimilar
+- The solution trajectories are similar
+- We leverage the solution trajectory as a weak supervision signal
+
+![multiview clustering](images/multiview_clustering.png)
+
+- Multi-view clustering seeks to reconcile the clusters from multiple views
+- However classic multi-view clustering uses fixed encoders
+
+# Deep Multiview Clustering using AV-KMeans
+
+We propose the AV-Kmeans algorithm, to jointly learn the encoder and the cluster assignment:
+
+![avkmeans pseudocode](images/avkmeans_pseudocode.png)
+
+![avkmeans graph](images/avkmeans_graph.png)
+
+- The encoder is fixed for clustering, and updated for classification
+- we use prototypical loss for the classification task
+
 # Usage
 
 ## Pre-requisites
@@ -32,18 +74,3 @@ python train_qt.py --data-path  data/airlines_processed.csv --pre-epoch 10 --vie
 ```
 - to train on askubuntu, replace `airlines` with `askubuntu` in the above command-line
 
-# Concept
-
-## Designing user intents is hard
-
-- Existing dialog classification work assumes that target intents are given
-- In industry, a classifier may have hundreds of intents
-- their discovery involves considerable human effort
-
-## Automatic discovery of dialog intents from data
-
-- We aim to automatically cluster conversa- tions into intents
-- A key challenge is to learn an effective con- versation encoder, in an unsupervised way
-- ... such that distance in embedding space relates closely to human perceived semantic distance
-
-![intent design](images/intents_acad_vs_indust.png)
