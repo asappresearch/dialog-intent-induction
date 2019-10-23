@@ -58,6 +58,24 @@ We propose the AV-Kmeans algorithm, to jointly learn the encoder and the cluster
 - The original data comprises a graph of questions, connected by human duplicate annotations
 - Our training dataset comprises the unlabeled 4,692 questions and answers from the 20 largest connected components
 
+# Experiments
+
+We experiment with three types of unsupervised pre-training:
+
+- none/PCA
+- auto-encoder
+- quick thoughts
+
+We compare with two popular clustering algorithms:
+
+- k-means
+- [Multi-View Spectral Clustering (MVSC)](https://github.com/mariceli3/multiview)
+
+<img src="images/results_twacs.png" width="350" /> <img src="images/results_askubuntu.png" width="350" />
+
+- AV-Kmeans outperforms the baselines for each pretraining algorithm
+- AV-Kmeans with quick thoughts pre-training shows the strongest performance
+
 # Usage
 
 ## Pre-requisites
