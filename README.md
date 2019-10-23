@@ -16,7 +16,7 @@ Data is available in the sub-directory [data](data), with a specific [LICENSE](d
 - A key challenge is to learn an effective conversation encoder, in an unsupervised way
 - ... such that distance in embedding space relates closely to human perceived semantic distance
 
-<img src="images/intents_acad_vs_indust.png" width="350" />
+<img src="images/intents_acad_vs_indust.png" width="500" />
 
 # Multiview Clustering
 
