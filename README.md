@@ -44,7 +44,19 @@ We propose the AV-Kmeans algorithm, to jointly learn the encoder and the cluster
 
 # New datasets
 
+- Existing goal-oriented dialog datasets concern predefined dialog intents
+- We propose two new datasets, drawn from real-world distributions, for evaluating intent induction
 
+## Twitter Airlines Customer Support (TwACS)
+
+- We use dialogs in the airline industry from the Twitter Support dataset released by Kaggle
+- The training set comprises 43,072 unlabeled dialogs. We annotated 500 dialogs to create a test set
+
+## AskUbuntu duplicate detection
+
+- We reprocessed the AskUbuntu question duplicate dataset into an intent clustering dataset
+- The original data comprises a graph of questions, connected by human duplicate annotations
+- Our training dataset comprises the unlabeled 4,692 questions and answers from the 20 largest connected components
 
 # Usage
 
