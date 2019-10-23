@@ -16,19 +16,19 @@ Data is available in the sub-directory [data](data), with a specific [LICENSE](d
 - A key challenge is to learn an effective conversation encoder, in an unsupervised way
 - ... such that distance in embedding space relates closely to human perceived semantic distance
 
-![intent design](images/intents_acad_vs_indust.png)
+<img src="images/intents_acad_vs_indust.png" width="350" />
 
 # Multiview Clustering
 
 Consider two dialogs for FindAirPods:
 
-![dialog examples](images/example_dialogs.png)
+<img src="images/example_dialogs.png" width="350" />
 
 - The user query utterances are lexically and syntactically dissimilar
 - The solution trajectories are similar
 - We leverage the solution trajectory as a weak supervision signal
 
-![multiview clustering](images/multiview_clustering.png)
+<img src="images/multiview_clustering.png" width="350" />
 
 - Multi-view clustering seeks to reconcile the clusters from multiple views
 - However classic multi-view clustering uses fixed encoders
@@ -36,11 +36,6 @@ Consider two dialogs for FindAirPods:
 # Deep Multiview Clustering using AV-KMeans
 
 We propose the AV-Kmeans algorithm, to jointly learn the encoder and the cluster assignment:
-
-<!-- ![avkmeans pseudocode](images/avkmeans_pseudocode.png)
-
-![avkmeans graph](images/avkmeans_graph.png)
- -->
 
 <img src="images/avkmeans_pseudocode.png" width="350" /><img src="images/avkmeans_graph.png" width="350" />
 
