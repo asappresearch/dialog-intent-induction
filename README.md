@@ -42,8 +42,7 @@ We propose the AV-Kmeans algorithm, to jointly learn the encoder and the cluster
 ![avkmeans graph](images/avkmeans_graph.png)
  -->
 
-<img src="images/avkmeans_pseudocode.png" width="400" />
-<img src="images/avkmeans_graph.png" width="400" />
+<img src="images/avkmeans_pseudocode.png" width="300" /><img src="images/avkmeans_graph.png" width="300" />
 
 - The encoder is fixed for clustering, and updated for classification
 - we use prototypical loss for the classification task
