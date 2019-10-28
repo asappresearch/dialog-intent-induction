@@ -99,14 +99,14 @@ Example dialogs for `FindAirPods`:
 - \# of unlabeled training instances: 43,072
 - \# of test instances: 500
 
-<img src="images/results_twacs.png" width="350" />
+<img src="images/results_twacsb.png" width="350" />
 
 ## AskUbuntu Results
 
 - \# of unlabeled training instances: 257,173
 - \# of test instances: 4,692
 
-<img src="images/results_askubuntu.png" width="350" />
+<img src="images/results_askubuntub.png" width="350" />
 
 - `AV-Kmeans` largely outperforms single-view and classical multi-view clustering methods.
 - Quick thoughts pretraining leads to better results than PCA and autoencoders.
