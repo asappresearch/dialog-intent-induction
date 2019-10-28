@@ -10,7 +10,7 @@ Data is available in the sub-directory [data](data), with a specific [LICENSE](d
 
 - **Academic dialog** datasets such as ATIS and MultiWoZ assume dialog intents are given;
 - They also focus on simple dialog intents like `BookRestaurant` or `BookHotel`.
-- Many complex dialog intents emerge in *industrial settings* that are hard to predefine;
+- Many complex dialog intents emerge in **industrial settings** that are hard to predefine;
 - The dialog intents are also undergoing dynamic changes.
 
 ## The New Task: Dialog Intent Induction
