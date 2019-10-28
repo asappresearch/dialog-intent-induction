@@ -39,14 +39,31 @@ Example dialogs for `FindAirPods`:
 - Multi-view clustering seeks to reconcile the clusters from multiple views.
 - Standard MVC algorithms expect fixed feature vectors as inputs.
 
-# Deep Multiview Clustering using AV-KMeans
+# Joint Representation Learning and MVC
 
-We propose the AV-Kmeans algorithm, to jointly learn the encoder and the cluster assignment:
+## Representation Learninig is Powerful
+
+- SOTA models can capture semantic variations, e.g., BERT, ELMo.
+- Can we **jointly learn representations and multi-view cluster assignments**?
+
+## Our approach: Alternatinve-View K-Means
 
 <img src="images/avkmeans_pseudocode.png" width="350" /> &nbsp; <img src="images/avkmeans_graph.png" width="350" />
 
-- The encoder is fixed for clustering, and updated for classification
-- we use prototypical loss for the classification task
+- We perform clustering on view 1 and project the assignment to view 2 for classification.
+- The encoders are fixed for clustering and updated for classification.
+
+## Prototypical Episode Training
+
+<img src="images/avkmeans_pseudocode.png" width="350" /> &nbsp; <img src="images/prototypical_loss.png" width="350" />
+
+- Minimizing prototypical loss encourages the query point to be closer to the target cluster.
+- We directly perform classification in the k-means clustering space without introducing additional softmax parameters.
+
+## Parameter Initialization
+
+- Recurrent autoencoders 
+- Quick thoughts
 
 # New datasets
 
