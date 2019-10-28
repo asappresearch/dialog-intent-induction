@@ -21,20 +21,23 @@ Data is available in the sub-directory [data](data), with a specific [LICENSE](d
 - Unsupervised clustering of user query utterances into dialog intents.
 - Heuristic: user query utterance is the first user utterance.
 
-# Multiview Clustering
+# Multi-View Clustering (MVC)
 
-Consider two dialogs for FindAirPods:
+## Why Multi-View?
+
+Example dialogs for `FindAirPods`:
 
 <img src="images/example_dialogs.png" width="350" />
 
-- The user query utterances are lexically and syntactically dissimilar
-- The solution trajectories are similar
-- We leverage the solution trajectory as a weak supervision signal
+- *Query view*: the user query utterances are lexically and syntactically dissimilar;
+- *Content view*: however, the solution trajectories are similar.
+
+## Classical Multi-View Clustering
 
 <img src="images/multiview_clustering.png" width="350" />
 
-- Multi-view clustering seeks to reconcile the clusters from multiple views
-- However classic multi-view clustering uses fixed encoders
+- Multi-view clustering seeks to reconcile the clusters from multiple views.
+- Standard MVC algorithms expect fixed feature vectors as inputs.
 
 # Deep Multiview Clustering using AV-KMeans
 
