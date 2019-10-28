@@ -65,21 +65,22 @@ Example dialogs for `FindAirPods`:
 - Recurrent autoencoders 
 - Quick thoughts
 
-# New datasets
-
-- Existing goal-oriented dialog datasets concern predefined dialog intents
-- We propose two new datasets, drawn from real-world distributions, for evaluating intent induction
+# New Datasets
 
 ## Twitter Airlines Customer Support (TwACS)
 
-- We use dialogs in the airline industry from the Twitter Support dataset released by Kaggle
-- The training set comprises 43,072 unlabeled dialogs. We annotated 500 dialogs to create a test set
+<img src="images/airlines_logos_intents3.png" width="350" />
 
-## AskUbuntu duplicate detection
+- We use dialogs in the airline industry from the Kaggle Twitter Support dataset.
+- 43,072 unlabeled dialogs. We annotated 500 dialogs to create a test set.
+- End up with 14 dialog intents.
 
-- We reprocessed the AskUbuntu question duplicate dataset into an intent clustering dataset
-- The original data comprises a graph of questions, connected by human duplicate annotations
-- Our training dataset comprises the unlabeled 4,692 questions and answers from the 20 largest connected components
+## AskUbuntu Duplicate Question Clusters}
+
+<img src="images/duplicate_graphs.png" width="350" />
+
+- We construct a duplicate question graph where duplicated questions are connected.
+- We adopt the largest 20 clusters that contain 4,692 questions for evaluation.
 
 # Experiments
 
