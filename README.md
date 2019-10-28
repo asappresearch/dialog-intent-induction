@@ -69,8 +69,6 @@ Example dialogs for `FindAirPods`:
 
 ## Twitter Airlines Customer Support (TwACS)
 
-<img src="images/airlines_logos_intents3.png" width="350" />
-
 - We use dialogs in the airline industry from the Kaggle Twitter Support dataset.
 - 43,072 unlabeled dialogs. We annotated 500 dialogs to create a test set.
 - End up with 14 dialog intents.
@@ -84,21 +82,35 @@ Example dialogs for `FindAirPods`:
 
 # Experiments
 
-We experiment with three types of unsupervised pre-training:
-
-- none/PCA
-- auto-encoder
-- quick thoughts
-
-We compare with two popular clustering algorithms:
+## Competitive Clustering Methods
 
 - k-means
 - [Multi-View Spectral Clustering (MVSC)](https://github.com/mariceli3/multiview)
+- `AV-Kmeans`
 
-<img src="images/results_twacs.png" width="350" /> <img src="images/results_askubuntu.png" width="350" />
+## Pretraining Methods
 
-- AV-Kmeans outperforms the baselines for each pretraining algorithm
-- AV-Kmeans with quick thoughts pre-training shows the strongest performance
+- PCA/None(`AV-Kmeans`)
+- Autoencoders
+- [Quick thoughts](https://arxiv.org/pdf/1803.02893.pdf)
+
+## TwACS Results
+
+- # of unlabeled training instances: 43,072
+- # of test instances: 500
+
+<img src="images/results_twacs.png" width="350" />
+
+## AskUbuntu Results
+
+- # of unlabeled training instances: 257,173
+- # of test instances: 4,692
+
+<img src="images/results_askubuntu.png" width="350" />
+
+- `AV-Kmeans` largely outperforms single-view and classical multi-view clustering methods.
+- Quick thoughts pretraining leads to better results than PCA and autoencoders.
+- Given more training instances, `AV-Kmeans` is less dependent on pretraining.
 
 # Usage
 
