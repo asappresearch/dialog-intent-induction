@@ -8,7 +8,7 @@ Data is available in the sub-directory [data](data), with a specific [LICENSE](d
 
 <img src="images/intents_acad_vs_indust.png" width="500" />
 
-- *Academic dialog* datasets such as ATIS and MultiWoZ assume dialog intents are given;
+- **Academic dialog** datasets such as ATIS and MultiWoZ assume dialog intents are given;
 - They also focus on simple dialog intents like `BookRestaurant` or `BookHotel`.
 - Many complex dialog intents emerge in *industrial settings* that are hard to predefine;
 - The dialog intents are also undergoing dynamic changes.
@@ -29,8 +29,8 @@ Example dialogs for `FindAirPods`:
 
 <img src="images/example_dialogs.png" width="350" />
 
-- *Query view*: the user query utterances are lexically and syntactically dissimilar;
-- *Content view*: however, the solution trajectories are similar.
+- **Query view**: the user query utterances are lexically and syntactically dissimilar;
+- **Content view**: however, the solution trajectories are similar.
 
 ## Classical Multi-View Clustering
 
