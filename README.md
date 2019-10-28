@@ -15,6 +15,8 @@ Data is available in the sub-directory [data](data), with a specific [LICENSE](d
 
 ## The New Task: Dialog Intent Induction
 
+<img src="images/convos_to_intents.png" width="500" />
+
 - Automatic discovery of dialog intents from human-human conversations.
 - Unsupervised clustering of user query utterances into dialog intents.
 - Heuristic: user query utterance is the first user utterance.
