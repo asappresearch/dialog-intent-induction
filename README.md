@@ -4,19 +4,20 @@ Data is available in the sub-directory [data](data), with a specific [LICENSE](d
 
 # Dialog Intent Induction
 
-## Designing user intents is hard
-
-- Existing dialog classification work assumes that target intents are given
-- In industry, a classifier may have hundreds of intents
-- their discovery involves considerable human effort
-
-## Automatic discovery of dialog intents from data
-
-- We aim to automatically cluster conversations into intents
-- A key challenge is to learn an effective conversation encoder, in an unsupervised way
-- ... such that distance in embedding space relates closely to human perceived semantic distance
+## The Gap between Academics and Industry
 
 <img src="images/intents_acad_vs_indust.png" width="500" />
+
+- *Academic dialog* datasets such as ATIS and MultiWoZ assume dialog intents are given;
+- They also focus on simple dialog intents like `BookRestaurant` or `BookHotel`.
+- Many complex dialog intents emerge in *industrial settings* that are hard to predefine;
+- The dialog intents are also undergoing dynamic changes.
+
+## The New Task: Dialog Intent Induction
+
+- Automatic discovery of dialog intents from human-human conversations.
+- Unsupervised clustering of user query utterances into dialog intents.
+- Heuristic: user query utterance is the first user utterance.
 
 # Multiview Clustering
 
