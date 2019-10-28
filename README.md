@@ -6,7 +6,7 @@ Data is available in the sub-directory [data](data), with a specific [LICENSE](d
 
 ## The Gap between Academics and Industry
 
-<img src="images/intents_acad_vs_indust.pdf" width="500" />
+<img src="images/intents_acad_vs_indust.png" width="500" />
 
 - *Academic dialog* datasets such as ATIS and MultiWoZ assume dialog intents are given;
 - They also focus on simple dialog intents like `BookRestaurant` or `BookHotel`.
