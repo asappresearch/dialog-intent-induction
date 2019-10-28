@@ -103,8 +103,8 @@ Example dialogs for `FindAirPods`:
 
 ## AskUbuntu Results
 
-- # of unlabeled training instances: 257,173
-- # of test instances: 4,692
+- \# of unlabeled training instances: 257,173
+- \# of test instances: 4,692
 
 <img src="images/results_askubuntu.png" width="350" />
 
