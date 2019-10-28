@@ -96,8 +96,8 @@ Example dialogs for `FindAirPods`:
 
 ## TwACS Results
 
-- # of unlabeled training instances: 43,072
-- # of test instances: 500
+- \# of unlabeled training instances: 43,072
+- \# of test instances: 500
 
 <img src="images/results_twacs.png" width="350" />
 
