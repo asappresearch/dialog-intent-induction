@@ -31,14 +31,9 @@ Data is available in the sub-directory [data](data), with a specific [LICENSE](d
 - Minimizing prototypical loss encourages the query point to be closer to the target cluster.
 - We directly perform classification in the k-means clustering space without introducing additional softmax parameters.
 
-## Parameter Initialization
-
-- Recurrent autoencoders 
-- Quick thoughts
-
 # Experiments
 
-We construct a new dataset to evaluate this new intent induction tassk:
+We construct a new dataset to evaluate this new intent induction task:
 
 ## Twitter Airlines Customer Support (TwACS)
 
@@ -66,7 +61,7 @@ F1 scores:
 |------|----------|--------------|----------------|
 |k-means| 28.2 | 29.5 | 42.1|
 |MVSC| 27.8 | 31.3 | 40 |
-|AV-Kmeans (ours) | 35.4 | 38.9 | 46.2 |
+|**AV-Kmeans (ours)** | **35.4** | **38.9** | **46.2** |
 
 - `AV-Kmeans` largely outperforms single-view and classical multi-view clustering methods.
 - Quick thoughts pretraining leads to better results than PCA and autoencoders.
