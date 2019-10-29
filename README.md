@@ -21,7 +21,7 @@ Data is available in the sub-directory [data](data), with a specific [LICENSE](d
 
 ## Our approach: Alternating-View K-Means
 
-<img src="images/avkmeans_graph.png" width="350" />
+<img src="images/avkmeans_graph.png" width="500" />
 
 - We perform clustering on view 1 and project the assignment to view 2 for classification.
 - The encoders are fixed for clustering and updated for classification.
