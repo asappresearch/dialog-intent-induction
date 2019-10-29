@@ -47,7 +47,7 @@ F1 scores:
 |MVSC| 27.8 | 31.3 | 40 |
 |**AV-Kmeans (ours)** | **35.4** | **38.9** | **46.2** |
 
-`AV-Kmeans` largely outperforms single-view and classical multi-view clustering methods. Quick thoughts pretraining leads to better results than PCA and autoencoders.
+`AV-Kmeans` largely outperforms single-view and classical multi-view clustering methods. Quick thoughts pretraining leads to better results than PCA or autoencoders.
 
 # Usage
 
