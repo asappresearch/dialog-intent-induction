@@ -31,11 +31,9 @@ We construct a new dataset to evaluate this new intent induction task:
 
 **Twitter Airlines Customer Support (TwACS)**
 
-We use dialogs in the airline industry from the Kaggle Twitter Support dataset. There are 43,072 unlabeled dialogs. We annotated 500 dialogs to create a test set. We ended up with 14 dialog intents.
+We use dialogs in the airline industry from the Kaggle Twitter Support dataset. There are 43,072 unlabeled dialogs. We annotated 500 dialogs to create a test set, using 14 dialog intents.
 
-We compare three competitive clustering methods: k-means, [Multi-View Spectral Clustering (MVSC)](https://github.com/mariceli3/multiview), `AV-Kmeans` (ours).
-
-We compare three approaches to parameter initialization: PCA for k-means and MVSC; autoencoders; and [quick thoughts](https://arxiv.org/pdf/1803.02893.pdf).
+We compare three competitive clustering methods: k-means, [Multi-View Spectral Clustering (MVSC)](https://github.com/mariceli3/multiview), `AV-Kmeans` (ours). We experiment with three approaches to parameter initialization: PCA for k-means and MVSC; autoencoders; and [quick thoughts](https://arxiv.org/pdf/1803.02893.pdf).
 
 **TwACS Results**
 
