@@ -2,11 +2,9 @@ Code and data for paper ["Dialog Intent Induction with Deep Multi-View Clusterin
 
 Data is available in the sub-directory [data](data), with a specific [LICENSE](data/LICENSE) file.
 
-# Dialog Intent Induction
+# New Task: Dialog Intent Induction
 
 ## The Gap between Academics and Industry
-
-<img src="images/intents_acad_vs_indust.png" width="500" />
 
 - **Academic dialog** datasets such as ATIS and MultiWoZ assume dialog intents are given;
 - They also focus on simple dialog intents like `BookRestaurant` or `BookHotel`.
@@ -15,38 +13,13 @@ Data is available in the sub-directory [data](data), with a specific [LICENSE](d
 
 ## The New Task: Dialog Intent Induction
 
-<img src="images/convos_to_intents.png" width="500" />
-
 - Automatic discovery of dialog intents from human-human conversations.
 - Unsupervised clustering of user query utterances into dialog intents.
 - Heuristic: user query utterance is the first user utterance.
 
-# Multi-View Clustering (MVC)
+# New algorithm: AV-Kmeans
 
-## Why Multi-View?
-
-Example dialogs for `FindAirPods`:
-
-<img src="images/example_dialogs.png" width="350" />
-
-- **Query view**: the user query utterances are lexically and syntactically dissimilar;
-- **Content view**: however, the solution trajectories are similar.
-
-## Classical Multi-View Clustering
-
-<img src="images/multiview_clustering.png" width="350" />
-
-- Multi-view clustering seeks to reconcile the clusters from multiple views.
-- Standard MVC algorithms expect fixed feature vectors as inputs.
-
-# Joint Representation Learning and MVC
-
-## Representation Learninig is Powerful
-
-- SOTA models can capture semantic variations, e.g., BERT, ELMo.
-- Can we **jointly learn representations and multi-view cluster assignments**?
-
-## Our approach: Alternatinve-View K-Means
+## Our approach: Alternating-View K-Means
 
 <img src="images/avkmeans_graph.png" width="350" />
 
@@ -54,8 +27,6 @@ Example dialogs for `FindAirPods`:
 - The encoders are fixed for clustering and updated for classification.
 
 ## Prototypical Episode Training
-
-<img src="images/prototypical_loss.png" width="350" />
 
 - Minimizing prototypical loss encourages the query point to be closer to the target cluster.
 - We directly perform classification in the k-means clustering space without introducing additional softmax parameters.
@@ -65,22 +36,15 @@ Example dialogs for `FindAirPods`:
 - Recurrent autoencoders 
 - Quick thoughts
 
-# New Datasets
+# Experiments
+
+We construct a new dataset to evaluate this new intent induction tassk:
 
 ## Twitter Airlines Customer Support (TwACS)
 
 - We use dialogs in the airline industry from the Kaggle Twitter Support dataset.
 - 43,072 unlabeled dialogs. We annotated 500 dialogs to create a test set.
 - End up with 14 dialog intents.
-
-## AskUbuntu Duplicate Question Clusters}
-
-<img src="images/duplicate_graphs.png" width="350" />
-
-- We construct a duplicate question graph where duplicated questions are connected.
-- We adopt the largest 20 clusters that contain 4,692 questions for evaluation.
-
-# Experiments
 
 ## Competitive Clustering Methods
 
@@ -96,21 +60,16 @@ Example dialogs for `FindAirPods`:
 
 ## TwACS Results
 
-- \# of unlabeled training instances: 43,072
-- \# of test instances: 500
+F1 scores:
 
-<img src="images/results_twacsb.png" width="500" />
-
-## AskUbuntu Results
-
-- \# of unlabeled training instances: 257,173
-- \# of test instances: 4,692
-
-<img src="images/results_askubuntub.png" width="500" />
+|Algo   | PCA/None | autoencoders | quick thoughts |
+|------|----------|--------------|----------------|
+|k-means| 28.2 | 29.5 | 42.1|
+|MVSC| 27.8 | 31.3 | 40 |
+|AV-Kmeans (ours) | 35.4 | 38.9 | 46.2 |
 
 - `AV-Kmeans` largely outperforms single-view and classical multi-view clustering methods.
 - Quick thoughts pretraining leads to better results than PCA and autoencoders.
-- Given more training instances, `AV-Kmeans` is less dependent on pretraining.
 
 # Usage
 
