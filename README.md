@@ -35,7 +35,7 @@ We use dialogs in the airline industry from the Kaggle Twitter Support dataset. 
 
 We compare three competitive clustering methods: k-means, [Multi-View Spectral Clustering (MVSC)](https://github.com/mariceli3/multiview), `AV-Kmeans` (ours).
 
-We compare three approaches to parameter initialization: PCA for k-means and MVSC, autoencoders, and [Quick thoughts](https://arxiv.org/pdf/1803.02893.pdf).
+We compare three approaches to parameter initialization: PCA for k-means and MVSC; autoencoders; and [quick thoughts](https://arxiv.org/pdf/1803.02893.pdf).
 
 **TwACS Results**
 
