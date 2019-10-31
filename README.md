@@ -4,7 +4,9 @@ Data is available in the sub-directory [data](data), with a specific [LICENSE](d
 
 # Dialog Intent Induction
 
-Dialog intent induction aims at automatically discovering dialog intents from human-human conversations. The problem is largely overlooked in the prior academic works, which created a hugh gap between academics and industry. In particular, **academic dialog** datasets such as ATIS and MultiWoZ assume dialog intents are given; they also focus on simple dialog intents like `BookRestaurant` or `BookHotel`. However, many complex dialog intents emerge in **industrial settings** that are hard to predefine; the dialog intents are also undergoing dynamic changes.
+Dialog intent induction aims at automatically discovering dialog intents from human-human conversations. The problem is largely overlooked in the prior academic works, which created a hugh gap between academics and industry. 
+
+In particular, **academic dialog** datasets such as ATIS and MultiWoZ assume dialog intents are given; they also focus on simple dialog intents like `BookRestaurant` or `BookHotel`. However, many complex dialog intents emerge in **industrial settings** that are hard to predefine; the dialog intents are also undergoing dynamic changes.
 
 ## Deep multi-view clustering
 
