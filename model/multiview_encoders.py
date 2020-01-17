@@ -194,7 +194,7 @@ def create_model_from_embeddings(glove_path, id_to_token, token_to_id):
     pretrained_list = []
     scale = np.sqrt(3.0 / word_emb_size)
     print('loading oov')
-    for word in id_to_token:
+    for word in token_to_id:
         # apply lower() because all GloVe vectors are for lowercase words
         if word.lower() in pretrained:
             pretrained_list.append(np.array(pretrained[word.lower()]))

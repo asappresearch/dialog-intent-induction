@@ -19,6 +19,16 @@ class Dataset(Dataset):
             view2_col: str, the column corresponding to view 2 input
             label_col: str, the column corresponding to label
         """
+        
+        def tokens_to_idices(tokens):
+            token_idices = []
+            for token in tokens:
+                if token not in token_to_id:
+                    token_to_id[token] = len(token_to_id)
+                    id_to_token.append(token)
+                token_idices.append(token_to_id[token])
+            return token_idices
+                
         id_to_token = [PAD, UNK, START, END]
         token_to_id = {PAD: 0, UNK: 1, START: 2, END: 3}
         id_to_label = [UNK]
@@ -50,14 +60,6 @@ class Dataset(Dataset):
                     v2_tokens = [sent.lower().split() for sent in view2_sents]
                 v2_tokens = v2_tokens[:max_sent]
 
-                def tokens_to_idices(tokens):
-                    token_idices = []
-                    for token in tokens:
-                        if token not in token_to_id:
-                            token_to_id[token] = len(token_to_id)
-                            id_to_token.append(token)
-                        token_idices.append(token_to_id[token])
-                    return token_idices
                 v1_token_idices = tokens_to_idices(v1_tokens)
                 v2_token_idices = [tokens_to_idices(tokens) for tokens in v2_tokens]
                 v2_token_idices = [idices for idices in v2_token_idices if len(idices) > 0]
