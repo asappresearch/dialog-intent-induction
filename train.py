@@ -193,7 +193,7 @@ def main():
     print(f'{datetime.datetime.now()} pretrain: eval prec={prec:.4f} rec={rec:.4f} f1={f1:.4f} '
           f'acc={acc:.4f} sil={silhouette:.4f}, db={davies_bouldin:.4f}')
     perm_idx = dataset.trn_idx
-    pred2s, centroids1, centroids2, pred1s_perm_idx, preds2_perm_idx = None, None, None, None, None
+    pred2s, centroids1, centroids2, pred1s_perm_idx, pred2s_perm_idx = None, None, None, None, None
     for epoch in range(1, args.num_epochs + 1):
         trn_loss = 0.
 
