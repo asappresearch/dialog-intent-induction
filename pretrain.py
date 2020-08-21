@@ -1,7 +1,7 @@
 import copy
 import numpy as np
 
-from train import BATCH_SIZE, AE_BATCH_SIZE
+import train as train_mod
 
 
 def pretrain_qt(dataset, perm_idx, expressions, train=True):
@@ -28,9 +28,9 @@ def pretrain_qt(dataset, perm_idx, expressions, train=True):
     qt_ex = np.random.permutation(qt_ex)
 
     total_loss, total_acc = 0., 0.
-    n_batch = (len(qt_ex) + BATCH_SIZE - 1) // BATCH_SIZE
+    n_batch = (len(qt_ex) + train_mod.BATCH_SIZE - 1) // train_mod.BATCH_SIZE
     for i in range(n_batch):
-        qt_ex_batch = qt_ex[i*BATCH_SIZE:(i+1)*BATCH_SIZE]
+        qt_ex_batch = qt_ex[i*train_mod.BATCH_SIZE:(i+1)*train_mod.BATCH_SIZE]
 
         v1_idxes, v2_idxes = list(zip(*[(ex[0].item(), ex[1].item()) for ex in qt_ex_batch]))
         v1_utts = [utts[idx] for idx in v1_idxes]
@@ -70,9 +70,9 @@ def pretrain_ae(dataset, perm_idx, expressions, train=True):
     utterances = np.random.permutation(utterances)
 
     total_loss, total_acc = 0., 0.
-    n_batch = (len(utterances) + AE_BATCH_SIZE - 1) // AE_BATCH_SIZE
+    n_batch = (len(utterances) + train_mod.AE_BATCH_SIZE - 1) // train_mod.AE_BATCH_SIZE
     for i in range(n_batch):
-        utt_batch = utterances[i*AE_BATCH_SIZE:(i+1)*AE_BATCH_SIZE]
+        utt_batch = utterances[i*train_mod.AE_BATCH_SIZE:(i+1)*train_mod.AE_BATCH_SIZE]
         enc_state = model(utt_batch, encoder='v1')
         reconst = model.decode(decoder_input=utt_batch, latent_z=enc_state)
         loss, acc = model.reconst_loss(utt_batch, reconst)
