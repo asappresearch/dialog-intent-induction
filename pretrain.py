@@ -1,8 +1,8 @@
 import copy
-import torch
 import numpy as np
 
 from train import BATCH_SIZE, AE_BATCH_SIZE
+
 
 def pretrain_qt(dataset, perm_idx, expressions, train=True):
     """
@@ -48,8 +48,10 @@ def pretrain_qt(dataset, perm_idx, expressions, train=True):
             optimizer.step()
     return total_loss, total_acc / len(qt_ex)
 
+
 def after_pretrain_qt(model):
     model.view2_word_rnn = copy.deepcopy(model.view1_word_rnn)
+
 
 def pretrain_ae(dataset, perm_idx, expressions, train=True):
     """
@@ -83,6 +85,7 @@ def pretrain_ae(dataset, perm_idx, expressions, train=True):
             optimizer.step()
     total_acc = total_acc / len(utterances)
     return total_loss, total_acc
+
 
 def after_pretrain_ae(model):
     # we'll use the view1 encoder for both view 1 and view 2

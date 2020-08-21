@@ -4,13 +4,26 @@ combinations of the resulting representations
 
 this was forked initially from train.py, then modified
 """
-import argparse, os, datetime, copy
+import argparse
+import datetime
+import copy
 import time
 import numpy as np
-np.random.seed(0)
 import sklearn.cluster
 import warnings
+import torch
+from torch import autograd
+
+from proc_data import Dataset
+from model.multiview_encoders import MultiviewEncoders
+from metrics import cluster_metrics
+import pretrain
+
+
 warnings.filterwarnings(action='ignore', category=RuntimeWarning)
+
+torch.manual_seed(0)
+np.random.seed(0)
 
 LSTM_LAYER = 1
 LSTM_HIDDEN = 300
@@ -19,20 +32,7 @@ DROPOUT_RATE = 0.
 BATCH_SIZE = 32
 LEARNING_RATE = 0.001
 
-import torch
-torch.manual_seed(0)
-import torch.nn.functional as F
-from torch import autograd
-
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-from proc_data import Dataset
-from model.multiview_encoders import MultiviewEncoders
-from metrics import cluster_metrics
-from samplers import CategoriesSampler
-from model.utils import *
-import train
-import pretrain
 
 
 def transform(data, model):
@@ -47,15 +47,20 @@ def transform(data, model):
     latent_zs = np.concatenate(latent_zs)
     return latent_zs
 
+
 def calc_prec_rec_f1_acc(preds, golds):
-        lgolds, lpreds = [], []
-        for g, p in zip(golds, list(preds)):
-            if g > 0:
-                lgolds.append(g)
-                lpreds.append(p)
-        prec, rec, f1 = cluster_metrics.calc_prec_rec_f1(gnd_assignments=torch.LongTensor(lgolds).to(device), pred_assignments=torch.LongTensor(lpreds).to(device))
-        acc = cluster_metrics.calc_ACC(torch.LongTensor(lpreds).to(device), torch.LongTensor(lgolds).to(device))
-        return prec, rec, f1, acc
+    lgolds, lpreds = [], []
+    for g, p in zip(golds, list(preds)):
+        if g > 0:
+            lgolds.append(g)
+            lpreds.append(p)
+    prec, rec, f1 = cluster_metrics.calc_prec_rec_f1(
+        gnd_assignments=torch.LongTensor(lgolds).to(device),
+        pred_assignments=torch.LongTensor(lpreds).to(device))
+    acc = cluster_metrics.calc_ACC(
+        torch.LongTensor(lpreds).to(device), torch.LongTensor(lgolds).to(device))
+    return prec, rec, f1, acc
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -63,8 +68,10 @@ def main():
     parser.add_argument('--glove-path', type=str, default='./data/glove.840B.300d.txt')
     parser.add_argument('--pre-epoch', type=int, default=5)
     parser.add_argument('--pt-batch', type=int, default=100)
-    parser.add_argument('--scenarios', type=str, default='view1,view2,concatviews,wholeconv', help='comma-separated, from [view1|view2|concatviews|wholeconv|mvsc]')
-    parser.add_argument('--mvsc-no-unk', action='store_true', help='only feed non-unk data to MVSC (to avoid oom)')
+    parser.add_argument('--scenarios', type=str, default='view1,view2,concatviews,wholeconv',
+                        help='comma-separated, from [view1|view2|concatviews|wholeconv|mvsc]')
+    parser.add_argument('--mvsc-no-unk', action='store_true',
+                        help='only feed non-unk data to MVSC (to avoid oom)')
 
     parser.add_argument('--view1-col', type=str, default='view1')
     parser.add_argument('--view2-col', type=str, default='view2')
@@ -72,12 +79,12 @@ def main():
     args = parser.parse_args()
 
     print('loading dataset')
-    dataset = Dataset(args.data_path, view1_col=args.view1_col, view2_col=args.view2_col, label_col=args.label_col)
+    dataset = Dataset(args.data_path, view1_col=args.view1_col, view2_col=args.view2_col,
+                      label_col=args.label_col)
     n_cluster = len(dataset.id_to_label) - 1
-    print ("num of class = %d" %n_cluster)
+    print("num of class = %d" % n_cluster)
 
     id_to_token, token_to_id = dataset.id_to_token, dataset.token_to_id
-    pad_idx, start_idx, end_idx = token_to_id["__PAD__"], token_to_id["__START__"], token_to_id["__END__"]
     vocab_size = len(dataset.token_to_id)
     print('vocab_size', vocab_size)
 
@@ -87,7 +94,8 @@ def main():
     print('loading glove')
     for line in open(args.glove_path):
         parts = line.strip().split()
-        if len(parts) % 100 != 1: continue
+        if len(parts) % 100 != 1:
+            continue
         word = parts[0]
         if word not in token_to_id:
             continue
@@ -105,7 +113,7 @@ def main():
             random_vector = np.random.uniform(-scale, scale, [word_emb_size])
             pretrained_list.append(random_vector)
 
-    model = MultiviewEncoders.construct_from_embeddings(
+    model = MultiviewEncoders.from_embeddings(
         embeddings=torch.FloatTensor(pretrained_list),
         num_layers=LSTM_LAYER,
         embedding_size=word_emb_size,
@@ -129,7 +137,8 @@ def main():
         if tst_acc > pre_acc:
             pre_state = copy.deepcopy(model.state_dict())
             pre_acc = tst_acc
-        print('{} epoch {}, train_loss={:.4f} test_acc={:.4f}'.format(datetime.datetime.now(), epoch, trn_loss, tst_acc))
+        print(f'{datetime.datetime.now()} epoch {epoch}, train_loss={trn_loss:.4f} '
+              f'test_acc={tst_acc:.4f}')
 
     if args.pre_epoch > 0:
         # load best state
@@ -191,7 +200,7 @@ def main():
         elif rep == 'mvsc':
             try:
                 import multiview
-            except:
+            except Exception:
                 print('please install https://github.com/mariceli3/multiview')
                 return
             print('imported multiview ok')
@@ -224,7 +233,8 @@ def main():
             raise Exception('unimplemented rep', rep)
 
         prec, rec, f1, acc = calc_prec_rec_f1_acc(preds, golds)
-        print('{} {}: eval prec={:.4f} rec={:.4f} f1={:.4f} acc={:.4f}'.format(datetime.datetime.now(), rep, prec, rec, f1, acc))
+        print(f'{datetime.datetime.now()} {rep}: eval prec={prec:.4f} rec={rec:.4f} f1={f1:.4f} '
+              f'acc={acc:.4f}')
 
 
 if __name__ == '__main__':

@@ -1,12 +1,9 @@
 """
 cluster metrics: precision, recall, )f1)
 """
-import math
-import random
 from collections import Counter
 
 import scipy.optimize
-import numpy as np
 import torch
 
 

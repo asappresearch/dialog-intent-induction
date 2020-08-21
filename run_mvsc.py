@@ -3,12 +3,21 @@ Given a pre-trained model, run mvsc on it, and print scores vs gold standard
 
 we'll use view1 encoder to encode each of view1 and view2, and then pass that through mvsc algo
 
-this should probably be folded innto run_clustering.py (originally kind of forked from run_clustering.py, and combined with some things
-from train_pca.py and train.py)
+this should probably be folded innto run_clustering.py (originally kind of forked from
+run_clustering.py, and combined with some things from train_pca.py and train.py)
 """
-import time, json, random, datetime, argparse, os
-from os import path
-from os.path import join
+import time
+import random
+import datetime
+import argparse
+
+import sklearn.cluster
+import numpy as np
+import torch
+
+from metrics import cluster_metrics
+from model import multiview_encoders
+from proc_data import Dataset
 
 try:
     import multiview
@@ -17,19 +26,10 @@ except Exception as e:
     print('eg pip install git+https://github.com/mariceli3/multiview')
     raise e
 
-import sklearn.cluster
-import numpy as np, torch
-from torch import autograd
-from tensorboardX import SummaryWriter
-
-from metrics import cluster_metrics
-from model import multiview_encoders
-from proc_data import Dataset
-import train
-
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 BATCH_SIZE = 32
+
 
 def transform(dataset, perm_idx, model, view):
     """
@@ -54,27 +54,25 @@ def transform(dataset, perm_idx, model, view):
     latent_zs = np.concatenate(latent_zs)
     return latent_zs, golds
 
+
 def run(
         ref, model_path, num_clusters, num_cluster_samples, seed,
         out_cluster_samples_file_hier,
         max_examples, out_cluster_samples_file,
         data_path, view1_col, view2_col, label_col,
-        sampling_strategy, mvsc_no_unk
-    ):
+        sampling_strategy, mvsc_no_unk):
     torch.manual_seed(seed)
     np.random.seed(seed)
     random.seed(seed)
 
-    datetime_str = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-    writer = SummaryWriter(f'runs/{ref}/{datetime_str}')
-
-    id_to_token, token_to_id, vocab_size, word_emb_size, mvc_encoder = multiview_encoders.load_model(model_path)
+    id_to_token, token_to_id, vocab_size, word_emb_size, mvc_encoder = \
+        multiview_encoders.load_model(model_path)
     print('loaded model')
 
     print('loading dataset')
     dataset = Dataset(data_path, view1_col=view1_col, view2_col=view2_col, label_col=label_col)
     n_cluster = len(dataset.id_to_label) - 1
-    print ("loaded dataset, num of class = %d" %n_cluster)
+    print("loaded dataset, num of class = %d" % n_cluster)
 
     idxes = dataset.trn_idx_no_unk if mvsc_no_unk else dataset.trn_idx
     trn_idx = [x.item() for x in np.random.permutation(idxes)]
@@ -103,17 +101,24 @@ def run(
         if g > 0:
             lgolds.append(g)
             lpreds.append(p)
-    prec, rec, f1 = cluster_metrics.calc_prec_rec_f1(gnd_assignments=torch.LongTensor(lgolds).to(device), pred_assignments=torch.LongTensor(lpreds).to(device))
-    acc = cluster_metrics.calc_ACC(torch.LongTensor(lpreds).to(device), torch.LongTensor(lgolds).to(device))
-    silhouette, davies_bouldin = sklearn.metrics.silhouette_score(latent_z1s, preds, metric='euclidean'), sklearn.metrics.davies_bouldin_score(latent_z1s, preds)
-    print('{} pretrain: eval prec={:.4f} rec={:.4f} f1={:.4f} acc={:.4f} sil={:.4f}, db={:.4f}'.format(datetime.datetime.now(), prec, rec, f1, acc, silhouette, davies_bouldin))
+    prec, rec, f1 = cluster_metrics.calc_prec_rec_f1(
+        gnd_assignments=torch.LongTensor(lgolds).to(device),
+        pred_assignments=torch.LongTensor(lpreds).to(device))
+    acc = cluster_metrics.calc_ACC(
+        torch.LongTensor(lpreds).to(device), torch.LongTensor(lgolds).to(device))
+    silhouette = sklearn.metrics.silhouette_score(latent_z1s, preds, metric='euclidean')
+    davies_bouldin = sklearn.metrics.davies_bouldin_score(latent_z1s, preds)
+    print(f'{datetime.datetime.now()} pretrain: eval prec={prec:.4f} rec={rec:.4f} f1={f1:.4f} '
+          f'acc={acc:.4f} sil={silhouette:.4f}, db={davies_bouldin:.4f}')
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--seed', type=int, default=123)
-    parser.add_argument('--max-examples', type=int, help='since we might not want to cluster entire dataset?')
-    parser.add_argument('--mvsc-no-unk', action='store_true', help='only feed non-unk data to MVSC (to avoid oom)')
+    parser.add_argument('--max-examples', type=int,
+                        help='since we might not want to cluster entire dataset?')
+    parser.add_argument('--mvsc-no-unk', action='store_true',
+                        help='only feed non-unk data to MVSC (to avoid oom)')
     parser.add_argument('--ref', type=str, required=True)
     parser.add_argument('--model-path', type=str, required=True)
     parser.add_argument('--data-path', type=str, default='./data/airlines_500_merged.csv')
@@ -122,9 +127,12 @@ if __name__ == '__main__':
     parser.add_argument('--label-col', type=str, default='cluster_id')
     parser.add_argument('--num-clusters', type=int, help='defaults to number of supervised classes')
     parser.add_argument('--num-cluster-samples', type=int, default=10)
-    parser.add_argument('--sampling-strategy', type=str, choices=['uniform', 'nearest'], default='nearest')
-    parser.add_argument('--out-cluster-samples-file-hier', type=str, default='tmp/cluster_samples_hier_{ref}.txt')
-    parser.add_argument('--out-cluster-samples-file', type=str, default='tmp/cluster_samples_{ref}.txt')
+    parser.add_argument('--sampling-strategy', type=str,
+                        choices=['uniform', 'nearest'], default='nearest')
+    parser.add_argument('--out-cluster-samples-file-hier', type=str,
+                        default='tmp/cluster_samples_hier_{ref}.txt')
+    parser.add_argument('--out-cluster-samples-file', type=str,
+                        default='tmp/cluster_samples_{ref}.txt')
     args = parser.parse_args()
     args.out_cluster_samples_file = args.out_cluster_samples_file.format(**args.__dict__)
     args.out_cluster_samples_file_hier = args.out_cluster_samples_file_hier.format(**args.__dict__)
