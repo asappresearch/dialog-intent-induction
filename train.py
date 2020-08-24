@@ -120,7 +120,7 @@ def main():
     optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
     expressions = (model, optimizer)
 
-    pre_acc, pre_state = 0., None
+    pre_acc, pre_state, pre_state_epoch = 0., None, None
     pretrain_method = {
         'ae': pretrain.pretrain_ae,
         'qt': pretrain.pretrain_qt,
@@ -134,6 +134,7 @@ def main():
         if tst_acc > pre_acc:
             pre_state = copy.deepcopy(model.state_dict())
             pre_acc = tst_acc
+            pre_state_epoch = epoch
         print('{} epoch {}, train_loss={:.4f} test_acc={:.4f}'.format(
             datetime.datetime.now(), epoch, trn_loss, tst_acc))
         if args.save_model_path is not None:
@@ -160,7 +161,7 @@ def main():
     if args.pre_epoch > 0:
         # load best state
         model.load_state_dict(pre_state)
-        print('loaded best state')
+        print(f'loaded best state from epoch {pre_state_epoch}')
 
         # deepcopy pretrained views into v1 and/or view2
         {
@@ -187,11 +188,9 @@ def main():
         pred_assignments=torch.LongTensor(lpreds).to(device))
     acc = cluster_metrics.calc_ACC(
         torch.LongTensor(lpreds).to(device), torch.LongTensor(lgolds).to(device))
-    silhouette = sklearn.metrics.silhouette_score(latent_z1s, pred1s, metric='euclidean')
-    davies_bouldin = sklearn.metrics.davies_bouldin_score(latent_z1s, pred1s)
 
-    print(f'{datetime.datetime.now()} pretrain: eval prec={prec:.4f} rec={rec:.4f} f1={f1:.4f} '
-          f'acc={acc:.4f} sil={silhouette:.4f}, db={davies_bouldin:.4f}')
+    print(f'{datetime.datetime.now()} pretrain: test prec={prec:.4f} rec={rec:.4f} '
+          f'f1={f1:.4f} acc={acc:.4f}')
     perm_idx = dataset.trn_idx
     pred2s, centroids1, centroids2, pred1s_perm_idx, pred2s_perm_idx = None, None, None, None, None
     for epoch in range(1, args.num_epochs + 1):
@@ -230,7 +229,7 @@ def main():
         acc = cluster_metrics.calc_ACC(
             torch.LongTensor(tst_pred2s).to(device), torch.LongTensor(tst_pred1s).to(device))
 
-        print('TEST f1={:.4f} acc={:.4f}'.format(f1, acc))
+        print('eval view 1 vs view 2: f1={:.4f} acc={:.4f}'.format(f1, acc))
 
         lgolds, lpreds = [], []
         for g, p in zip(golds, list(pred1s)):
@@ -242,11 +241,9 @@ def main():
             pred_assignments=torch.LongTensor(lpreds).to(device))
         acc = cluster_metrics.calc_ACC(
             torch.LongTensor(lpreds).to(device), torch.LongTensor(lgolds).to(device))
-        silhouette = sklearn.metrics.silhouette_score(latent_z1s, pred1s, metric='euclidean')
-        davies_bouldin = sklearn.metrics.davies_bouldin_score(latent_z1s, pred1s)
 
-        print(f'{datetime.datetime.now()} epoch {epoch}, eval prec={prec:.4f} rec={rec:.4f} '
-              f'f1={f1:.4f} acc={acc:.4f} sil={silhouette:.4f}, db={davies_bouldin:.4f}')
+        print(f'{datetime.datetime.now()} epoch {epoch}, test prec={prec:.4f} rec={rec:.4f} '
+              f'f1={f1:.4f} acc={acc:.4f}')
 
     if args.save_model_path is not None:
         pred1s = torch.from_numpy(pred1s)
