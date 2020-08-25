@@ -137,26 +137,6 @@ def main():
             pre_state_epoch = epoch
         print('{} epoch {}, train_loss={:.4f} test_acc={:.4f}'.format(
             datetime.datetime.now(), epoch, trn_loss, tst_acc))
-        if args.save_model_path is not None:
-            save_model_path = f'{args.save_model_path}_pre_e{epoch}.dat'
-            state = {
-                'model_state': model.state_dict(),
-                'id_to_token': dataset.id_to_token,
-                'word_emb_size': word_emb_size
-            }
-            with open(expand(save_model_path), 'wb') as f:
-                torch.save(state, f)
-            print('saved model to ', save_model_path)
-
-            save_model_path = f'{args.save_model_path}_pre_best_e{epoch}.dat'
-            state = {
-                'model_state': pre_state,
-                'id_to_token': dataset.id_to_token,
-                'word_emb_size': word_emb_size
-            }
-            with open(expand(save_model_path), 'wb') as f:
-                torch.save(state, f)
-            print('saved model to ', save_model_path)
 
     if args.pre_epoch > 0:
         # load best state
