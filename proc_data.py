@@ -52,7 +52,7 @@ class Dataset(Dataset):
                     view2_sents = view2_text.split("> <")
                     for i in range(len(view2_sents) - 1):
                         view2_sents[i] = view2_sents[i] + '>'
-                        view2_sents[i+1] = '<' + view2_sents[i]
+                        view2_sents[i+1] = '<' + view2_sents[i + 1]
                 v1_utts.append(view1_text)
                 if not tokenized:
                     v1_tokens = word_tokenize(view1_text.lower())
