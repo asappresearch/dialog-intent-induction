@@ -15,6 +15,7 @@ from model import multiview_encoders
 from metrics import cluster_metrics
 from samplers import CategoriesSampler
 from model import utils
+from lib.permutator import Permutator
 import pretrain
 
 
@@ -76,6 +77,32 @@ def calc_centroids(latent_zs, assignments, n_cluster):
         mean = np.mean(latent_zs[idx], 0)
         centroids.append(mean)
     return np.stack(centroids)
+
+
+def run_one_side(model, optimizer, preds_left, pt_batch, way, shot, query, n_cluster, dataset,
+                 right_encoder_side):
+    """
+    encoder_side should be 'v1' or 'v2'. It should match whichever view is 'right' here.
+    """
+    loss = 0
+    permutator = Permutator(len(dataset.trn_idx))
+
+    perm_idx = dataset.trn_idx[permutator.perm]
+
+    sampler = CategoriesSampler(preds_left, pt_batch, way, shot + query)
+    train_batches = [[dataset[perm_idx[idx]] for idx in indices] for indices in sampler]
+    loss += do_pass(train_batches, shot, way, query, (model, optimizer), encoder=right_encoder_side)
+
+    z_right, _ = transform(dataset, dataset.trn_idx, model, encoder=right_encoder_side)
+    centroids = calc_centroids(z_right, preds_left, n_cluster)
+    kmeans = sklearn.cluster.KMeans(
+        n_clusters=n_cluster, init=centroids, max_iter=10, verbose=0)
+    preds_right = kmeans.fit_predict(z_right)
+
+    tst_z_right, _ = transform(dataset, dataset.tst_idx, model, encoder=right_encoder_side)
+    tst_preds_right = kmeans.predict(tst_z_right)
+
+    return loss, preds_right, tst_preds_right
 
 
 def main():
@@ -155,11 +182,11 @@ def main():
         print('applied post-pretraining')
 
     kmeans = sklearn.cluster.KMeans(n_clusters=n_cluster, max_iter=300, verbose=0, random_state=0)
-    latent_z1s, golds = transform(dataset, dataset.trn_idx, model, encoder='v1')
-    pred1s = kmeans.fit_predict(latent_z1s)
+    z_v1, golds = transform(dataset, dataset.trn_idx, model, encoder='v1')
+    preds_v1 = kmeans.fit_predict(z_v1)
 
     lgolds, lpreds = [], []
-    for g, p in zip(golds, list(pred1s)):
+    for g, p in zip(golds, list(preds_v1)):
         if g > 0:
             lgolds.append(g)
             lpreds.append(p)
@@ -171,48 +198,34 @@ def main():
 
     print(f'{datetime.datetime.now()} pretrain: test prec={prec:.4f} rec={rec:.4f} '
           f'f1={f1:.4f} acc={acc:.4f}')
-    perm_idx = dataset.trn_idx
-    pred2s, centroids1, centroids2, pred1s_perm_idx, pred2s_perm_idx = None, None, None, None, None
+
+    shot, way, query = 5, args.way, 15
+
+    preds_v2 = None
     for epoch in range(1, args.num_epochs + 1):
         trn_loss = 0.
 
-        shot, way, query = 5, args.way, 15
-        sampler1 = CategoriesSampler(pred1s, args.pt_batch, way, shot+query)
-        train1_batches = [[dataset[perm_idx[idx]] for idx in indices] for indices in sampler1]
-        trn_loss += do_pass(train1_batches, shot, way, query, expressions, encoder='v2')
+        _loss, preds_v2, tst_preds_v2 = run_one_side(
+            model=model, optimizer=optimizer, preds_left=preds_v1,
+            pt_batch=args.pt_batch, way=way, shot=shot, query=query, n_cluster=n_cluster,
+            dataset=dataset, right_encoder_side='v2')
+        trn_loss += _loss
 
-        latent_z2s, _ = transform(dataset, perm_idx, model, encoder='v2')
-        centroids2 = calc_centroids(latent_z2s, pred1s, n_cluster)
-        kmeans2 = sklearn.cluster.KMeans(
-            n_clusters=n_cluster, init=centroids2, max_iter=10, verbose=0)
-        pred2s = kmeans2.fit_predict(latent_z2s)
-        pred2s_perm_idx = perm_idx.copy()
-        tst_latent_z2s, _ = transform(dataset, dataset.tst_idx, model, encoder='v2')
-        tst_pred2s = kmeans2.predict(tst_latent_z2s)
+        _loss, preds_v1, tst_preds_v1 = run_one_side(
+            model=model, optimizer=optimizer, preds_left=preds_v2,
+            pt_batch=args.pt_batch, way=way, shot=shot, query=query, n_cluster=n_cluster,
+            dataset=dataset, right_encoder_side='v1')
+        trn_loss += _loss
 
-        sampler2 = CategoriesSampler(pred2s, args.pt_batch, way, shot+query)
-        train2_batches = [[dataset[perm_idx[idx]] for idx in indices] for indices in sampler2]
-        trn_loss += do_pass(train2_batches, shot, way, query, expressions, encoder='v1')
-
-        perm_idx = np.random.permutation(dataset.trn_idx)
-        latent_z1s, golds = transform(dataset, perm_idx, model, encoder='v1')
-        centroids1 = calc_centroids(latent_z1s, pred2s, n_cluster)
-        kmeans1 = sklearn.cluster.KMeans(
-            n_clusters=n_cluster, init=centroids1, max_iter=10, verbose=0)
-        pred1s = kmeans1.fit_predict(latent_z1s)
-        pred1s_perm_idx = perm_idx.copy()
-        tst_latent_z1s, _ = transform(dataset, dataset.tst_idx, model, encoder='v1')
-        tst_pred1s = kmeans1.predict(tst_latent_z1s)
-
-        f1 = cluster_metrics.calc_f1(gnd_assignments=torch.LongTensor(tst_pred1s).to(device),
-                                     pred_assignments=torch.LongTensor(tst_pred2s).to(device))
+        f1 = cluster_metrics.calc_f1(gnd_assignments=torch.LongTensor(tst_preds_v1).to(device),
+                                     pred_assignments=torch.LongTensor(tst_preds_v2).to(device))
         acc = cluster_metrics.calc_ACC(
-            torch.LongTensor(tst_pred2s).to(device), torch.LongTensor(tst_pred1s).to(device))
+            torch.LongTensor(tst_preds_v2).to(device), torch.LongTensor(tst_preds_v1).to(device))
 
         print('eval view 1 vs view 2: f1={:.4f} acc={:.4f}'.format(f1, acc))
 
         lgolds, lpreds = [], []
-        for g, p in zip(golds, list(pred1s)):
+        for g, p in zip(golds, list(preds_v1)):
             if g > 0:
                 lgolds.append(g)
                 lpreds.append(p)
@@ -226,17 +239,15 @@ def main():
               f'f1={f1:.4f} acc={acc:.4f}')
 
     if args.save_model_path is not None:
-        pred1s = torch.from_numpy(pred1s)
-        if pred2s is not None:
-            pred2s = torch.from_numpy(pred2s)
+        preds_v1 = torch.from_numpy(preds_v1)
+        if preds_v2 is not None:
+            preds_v2 = torch.from_numpy(preds_v2)
         state = {
             'model_state': model.state_dict(),
             'id_to_token': dataset.id_to_token,
             'word_emb_size': word_emb_size,
-            'v1_assignments': pred1s,
-            'v2_assignments': pred2s,
-            'pred1s_perm_idx': pred1s_perm_idx,
-            'pred2s_perm_idx': pred2s_perm_idx
+            'v1_assignments': preds_v1,
+            'v2_assignments': preds_v2
         }
         with open(expand(args.save_model_path), 'wb') as f:
             torch.save(state, f)

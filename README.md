@@ -51,15 +51,15 @@ The F1 scores are presented below:
 - run one of:
 ```
 # no pre-training
-python train.py --pre-epoch 0 --num-epochs 50 --data-path data/airlines_processed.csv
+PYTHONPATH=. python train.py --pre-epoch 0 --num-epochs 50 --data-path data/airlines_processed.csv
 
 # ae pre-training
-python train.py --pre-model ae --pre-epoch 20 --num-epochs 0 --data-path data/airlines_processed.csv --save-model-path ae.pth
-python train.py --model-path ae.pth --pre-epoch 0 --num-epochs 50 --data-path data/airlines_processed.csv
+PYTHONPATH=. python train.py --pre-model ae --pre-epoch 20 --num-epochs 0 --data-path data/airlines_processed.csv --save-model-path ae.pth
+PYTHONPATH=. python train.py --model-path ae.pth --pre-epoch 0 --num-epochs 50 --data-path data/airlines_processed.csv
 
 # qt pre-training
-python train.py --pre-model qt --pre-epoch 10 --num-epochs 0 --data-path data/airlines_processed.csv --save-model-path qt.pth
-python train.py --model-path qt.pth --pre-epoch 0 --num-epochs 50 --data-path data/airlines_processed.csv
+PYTHONPATH=. python train.py --pre-model qt --pre-epoch 10 --num-epochs 0 --data-path data/airlines_processed.csv --save-model-path qt.pth
+PYTHONPATH=. python train.py --model-path qt.pth --pre-epoch 0 --num-epochs 50 --data-path data/airlines_processed.csv
 ```
 - to train on askubuntu, replace `airlines` with `askubuntu` in the above command-lines
 
@@ -67,6 +67,6 @@ python train.py --model-path qt.pth --pre-epoch 0 --num-epochs 50 --data-path da
 
 - for qt pretraining run:
 ```
-python train_qt.py --data-path  data/airlines_processed.csv --pre-epoch 10 --view1-col first_utterance --view2-col context --scenarios view1
+PYTHONPATH=. python train_qt.py --data-path  data/airlines_processed.csv --pre-epoch 10 --view1-col first_utterance --view2-col context --scenarios view1
 ```
 - to train on askubuntu, replace `airlines` with `askubuntu` in the above command-line
