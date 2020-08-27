@@ -172,14 +172,19 @@ class MultiviewEncoders(nn.Module):
         """
         gnd_utts is a list of lists of indices (the outer list should be a minibatch)
         reconst is a tensor with the logits from a decoder [batchsize][seqlen][vocabsize]
+        (should not have passed through softmax)
+
+        reconst should be one token longer than the inputs in gnd_utts. the additional
+        token to be predicted is the end_idx token
         """
         batch_size, seq_len, vocab_size = reconst.size()
         loss = 0
         padded, lengths = pad_sentences(gnd_utts, pad_idx=self.pad_idx, rpad=self.end_idx)
         batch_size = len(lengths)
         crit = nn.CrossEntropyLoss()
-        loss += crit(
-            reconst.view(batch_size * seq_len, vocab_size), padded.view(batch_size * seq_len))
+        reconst_flat = reconst.view(batch_size * seq_len, vocab_size)
+        padded_flat = padded.view(batch_size * seq_len)
+        loss += crit(reconst_flat, padded_flat)
         _, argmax = reconst.max(dim=-1)
         correct = (argmax == padded)
         acc = correct.float().mean().item()
