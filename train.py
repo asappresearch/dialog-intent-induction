@@ -84,7 +84,7 @@ def run_one_side(model, optimizer, preds_left, pt_batch, way, shot, query, n_clu
     encoder_side should be 'v1' or 'v2'. It should match whichever view is 'right' here.
     """
     loss = 0
-    perm_idx = np.random.permutatation(dataset.trn_idx)
+    perm_idx = np.random.permutation(dataset.trn_idx)
 
     sampler = CategoriesSampler(preds_left, pt_batch, way, shot + query)
     train_batches = [[dataset[perm_idx[idx]] for idx in indices] for indices in sampler]
