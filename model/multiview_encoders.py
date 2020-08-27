@@ -179,6 +179,7 @@ class MultiviewEncoders(nn.Module):
         """
         batch_size, seq_len, vocab_size = reconst.size()
         loss = 0
+        # this pad_sentences call will add token self.end_idx at the end of each sequence
         padded, lengths = pad_sentences(gnd_utts, pad_idx=self.pad_idx, rpad=self.end_idx)
         batch_size = len(lengths)
         crit = nn.CrossEntropyLoss()
