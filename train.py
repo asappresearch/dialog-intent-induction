@@ -198,6 +198,7 @@ def main():
     shot, way, query = 5, args.way, 15
 
     preds_v2 = None
+    best_epoch, best_model, best_dev_f1 = None, None, None
     for epoch in range(1, args.num_epochs + 1):
         trn_loss = 0.
 
@@ -213,12 +214,20 @@ def main():
             dataset=dataset, right_encoder_side='v1')
         trn_loss += _loss
 
-        f1 = cluster_metrics.calc_f1(gnd_assignments=torch.LongTensor(tst_preds_v1).to(device),
-                                     pred_assignments=torch.LongTensor(tst_preds_v2).to(device))
-        acc = cluster_metrics.calc_ACC(
+        dev_f1 = cluster_metrics.calc_f1(gnd_assignments=torch.LongTensor(tst_preds_v1).to(device),
+                                         pred_assignments=torch.LongTensor(tst_preds_v2).to(device))
+        dev_acc = cluster_metrics.calc_ACC(
             torch.LongTensor(tst_preds_v2).to(device), torch.LongTensor(tst_preds_v1).to(device))
 
-        print('eval view 1 vs view 2: f1={:.4f} acc={:.4f}'.format(f1, acc))
+        print('dev view 1 vs view 2: f1={:.4f} acc={:.4f}'.format(dev_f1, dev_acc))
+
+        if best_dev_f1 is None or dev_f1 > best_dev_f1:
+            print('new best epoch', epoch)
+            best_epoch = epoch
+            best_dev_f1 = dev_f1
+            best_model = copy.deepcopy(model.state_dict())
+            best_preds_v1 = preds_v1.copy()
+            best_preds_v2 = preds_v2.copy()
 
         lgolds, lpreds = [], []
         for g, p in zip(golds, list(preds_v1)):
@@ -233,6 +242,22 @@ def main():
 
         print(f'{datetime.datetime.now()} epoch {epoch}, test prec={prec:.4f} rec={rec:.4f} '
               f'f1={f1:.4f} acc={acc:.4f}')
+
+    print('restoring model for best dev epoch', best_epoch)
+    model.load_state_dict(best_model)
+    preds_v1, preds_v2 = best_preds_v1, best_preds_v2
+
+    lgolds, lpreds = [], []
+    for g, p in zip(golds, list(preds_v1)):
+        if g > 0:
+            lgolds.append(g)
+            lpreds.append(p)
+    prec, rec, f1 = cluster_metrics.calc_prec_rec_f1(
+        gnd_assignments=torch.LongTensor(lgolds).to(device),
+        pred_assignments=torch.LongTensor(lpreds).to(device))
+    acc = cluster_metrics.calc_ACC(
+        torch.LongTensor(lpreds).to(device), torch.LongTensor(lgolds).to(device))
+    print(f'{datetime.datetime.now()} test prec={prec:.4f} rec={rec:.4f} f1={f1:.4f} acc={acc:.4f}')
 
     if args.save_model_path is not None:
         preds_v1 = torch.from_numpy(preds_v1)
