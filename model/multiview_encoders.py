@@ -34,7 +34,8 @@ class MultiviewEncoders(nn.Module):
                 lstm_hidden_size,
                 dropout=dropout,
                 num_layers=num_layers,
-                bidirectional=bidirectional
+                bidirectional=bidirectional,
+                batch_first=True
             )
 
         self.view1_word_rnn = create_rnn(embedding_size)
@@ -84,6 +85,9 @@ class MultiviewEncoders(nn.Module):
                      with shape of [batch_size, seq_len, word_vocab_size]
 
         """
+        # this pad_sentences call will a start_idx token at the start of each sequence
+        # so, we are feeding in the previous token each time, in order to generate the
+        # next token
         padded, lengths = pad_sentences(decoder_input, pad_idx=self.pad_idx, lpad=self.start_idx)
         embeddings = self.embedder(padded)
         embeddings = self.word_dropout(embeddings)
@@ -115,7 +119,7 @@ class MultiviewEncoders(nn.Module):
         embeddings = self.word_dropout(embeddings)
         lengths, perm_idx = lengths.sort(0, descending=True)
         embeddings = embeddings[perm_idx]
-        packed = torch.nn.utils.rnn.pack_padded_sequence(embeddings, lengths, True)
+        packed = torch.nn.utils.rnn.pack_padded_sequence(embeddings, lengths, batch_first=True)
         rnn = self.get_encoder(encoder)
         _, (_, final_state) = rnn(packed, None)
         _, unperm_idx = perm_idx.sort(0)
@@ -133,7 +137,7 @@ class MultiviewEncoders(nn.Module):
         word_lens, perm_idx = word_lens.sort(0, descending=True)
         embeddings = embeddings[perm_idx]
         packed = torch.nn.utils.rnn.pack_padded_sequence(
-            embeddings, word_lens, True)
+            embeddings, word_lens, batch_first=True)
         _, (_, final_word_state) = self.view2_word_rnn(packed, None)
         _, unperm_idx = perm_idx.sort(0)
         final_word_state = final_word_state[:, unperm_idx]
@@ -144,7 +148,7 @@ class MultiviewEncoders(nn.Module):
 
         sent_lens, sent_perm_idx = sent_lens.sort(0, descending=True)
         sent_embeddings = final_word_state[sent_perm_idx]
-        sent_packed = torch.nn.utils.rnn.pack_padded_sequence(sent_embeddings, sent_lens, True)
+        sent_packed = torch.nn.utils.rnn.pack_padded_sequence(sent_embeddings, sent_lens, batch_first=True)
         _, (_, final_sent_state) = self.view2_sent_rnn(sent_packed, None)
         _, sent_unperm_idx = sent_perm_idx.sort(0)
         final_sent_state = final_sent_state[:, sent_unperm_idx]

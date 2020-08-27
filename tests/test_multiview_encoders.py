@@ -33,8 +33,17 @@ def test_ae_decoder():
 
     encoders = MultiviewEncoders(vocab_size, num_layers, embedding_size, lstm_hidden_size,
                                  word_dropout, dropout)
-    logits = encoders.decode(decoder_input=input_idxes, latent_z=latent_z)
+    with torch.no_grad():
+        logits = encoders.decode(decoder_input=input_idxes, latent_z=latent_z)
     print('logits.size()', logits.size())
+
+    for n in range(batch_size):
+        _input_idxes = input_idxes[n:n + 1]
+        _latent_z = latent_z[n: n + 1]
+        with torch.no_grad():
+            _logits = encoders.decode(decoder_input=_input_idxes, latent_z=_latent_z)
+        diff = (logits[n] - _logits).abs().max().item()
+        assert diff < 1e-7
 
 
 def test_reconst_loss():
