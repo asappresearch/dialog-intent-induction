@@ -9,9 +9,10 @@ UNK = "__UNK__"
 START = "__START__"
 END = "__END__"
 
-class Dataset(Dataset):
 
-    def __init__(self, fname, view1_col='view1_col', view2_col='view2_col', label_col='cluster_id', tokenized=True, max_sent=10, train_ratio=.9):
+class Dataset(Dataset):
+    def __init__(self, fname, view1_col='view1_col', view2_col='view2_col', label_col='cluster_id',
+                 tokenized=True, max_sent=10, train_ratio=.9):
         """
         Args:
             fname: str, training data file
@@ -19,7 +20,7 @@ class Dataset(Dataset):
             view2_col: str, the column corresponding to view 2 input
             label_col: str, the column corresponding to label
         """
-        
+
         def tokens_to_idices(tokens):
             token_idices = []
             for token in tokens:
@@ -28,7 +29,7 @@ class Dataset(Dataset):
                     id_to_token.append(token)
                 token_idices.append(token_to_id[token])
             return token_idices
-                
+
         id_to_token = [PAD, UNK, START, END]
         token_to_id = {PAD: 0, UNK: 1, START: 2, END: 3}
         id_to_label = [UNK]
@@ -43,14 +44,15 @@ class Dataset(Dataset):
             for row in reader:
                 view1_text, view2_text = row[view1_col], row[view2_col]
                 label = row[label_col]
-                if 'UNK' == label: label = UNK
+                if 'UNK' == label:
+                    label = UNK
                 if '<cust_' not in view1_text:
                     view2_sents = sent_tokenize(view2_text.lower())
                 else:
                     view2_sents = view2_text.split("> <")
                     for i in range(len(view2_sents) - 1):
-                         view2_sents[i] = view2_sents[i] + '>'
-                         view2_sents[i+1] = '<' + view2_sents[i]
+                        view2_sents[i] = view2_sents[i] + '>'
+                        view2_sents[i+1] = '<' + view2_sents[i + 1]
                 v1_utts.append(view1_text)
                 if not tokenized:
                     v1_tokens = word_tokenize(view1_text.lower())

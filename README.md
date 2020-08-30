@@ -51,21 +51,22 @@ The F1 scores are presented below:
 - run one of:
 ```
 # no pre-training
-python train.py --pre-epoch 0 --data-path data/airlines_processed.csv --num-epochs 50 --view1-col first_utterance --view2-col context
+cmdlines/airlines_mvc.sh
 
 # ae pre-training
-python train.py --pre-model ae --pre-epoch 20 --data-path data/airlines_processed.csv --num-epochs 50 --view1-col first_utterance --view2-col context
+cmdlines/airlines_ae.sh
+cmdlines/airlines_ae_mvc.sh
 
 # qt pre-training
-python train.py --pre-model qt --pre-epoch 10 --data-path data/airlines_processed.csv --num-epochs 50 --view1-col first_utterance --view2-col context
+cmdlines/airlines_qt.sh
+cmdlines/airlines_qt_mvc.sh
 ```
-- to train on askubuntu, replace `airlines` with `askubuntu` in the above command-lines
+- to train on askubuntu, replace `airlines` with `ubuntu` in the above command-lines
 
 ## To run k-means baseline
 
 - for qt pretraining run:
 ```
-python train_qt.py --data-path  data/airlines_processed.csv --pre-epoch 10 --view1-col first_utterance --view2-col context --scenarios view1
+PYTHONPATH=. python train_qt.py --data-path  data/airlines_processed.csv --pre-epoch 10 --view1-col first_utterance --view2-col context --scenarios view1
 ```
-- to train on askubuntu, replace `airlines` with `askubuntu` in the above command-line
-
+- to train on askubuntu, replace `airlines` with `askubuntu` in the above command-line, and remove the `--*-col` command-line options

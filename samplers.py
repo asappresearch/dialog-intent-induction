@@ -1,8 +1,9 @@
 import numpy as np
+
 np.random.seed(0)
 
-class CategoriesSampler():
 
+class CategoriesSampler():
     def __init__(self, labels, n_batch, n_cls, n_ins):
         """
         Args:
@@ -16,9 +17,11 @@ class CategoriesSampler():
         - we draw 'n_shot' examples of each class, ie n_ins here
             - these will be encoded, and averaged, to get the prototypes
         - and we draw 'n_query' query examples, of each class, which is also 'n_ins' here
-            - these will be encoded, and then used to generate the prototype loss, relative to the prototypes
+            - these will be encoded, and then used to generate the prototype loss, relative to the
+              prototypes
 
-        __iter__ returns a generator, which will yield n_batch sets of training data, one set of training
+        __iter__ returns a generator, which will yield n_batch sets of training data, one set of
+                 training
         data per yield command
         """
         if not isinstance(labels, list):
@@ -49,4 +52,3 @@ class CategoriesSampler():
                 batch.append(np.random.permutation(indices)[:self.n_ins])
             batch = np.stack(batch).flatten('F')
             yield batch
-
