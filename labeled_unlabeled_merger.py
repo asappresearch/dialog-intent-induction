@@ -1,5 +1,5 @@
 """
-given a labeled and unlabeled datafile, creates a single file, taht contains the data
+given a labeled and unlabeled datafile, creates a single file, that contains the data
 from both. the labels for the unlabeled data file will be UNK
 """
 import argparse
