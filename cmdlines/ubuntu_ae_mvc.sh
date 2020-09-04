@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export PYTHONPATH=.
+
 if [[ ! -f data/ubuntu_ae.pth ]]; then {
     echo Please train askubuntu ae first
 } fi

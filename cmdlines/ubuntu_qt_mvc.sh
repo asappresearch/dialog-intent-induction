@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export PYTHONPATH=.
+
 if [[ ! -f data/ubuntu_qt.pth ]]; then {
     echo Please train askubuntu qt first
 } fi

@@ -65,8 +65,14 @@ cmdlines/airlines_qt_mvc.sh
 
 ## To run k-means baseline
 
-- for qt pretraining run:
 ```
-PYTHONPATH=. python train_qt.py --data-path  data/airlines_processed.csv --pre-epoch 10 --view1-col first_utterance --view2-col context --scenarios view1
+# no pre-training
+cmdlines/airlines_none.sh
+
+# PCA pre-trainnig
+cmdalines/airlines_pca.sh
+
+# qt pre-training
+cmdlines/airlines_qt.sh
 ```
-- to train on askubuntu, replace `airlines` with `askubuntu` in the above command-line, and remove the `--*-col` command-line options
+- to train on askubuntu, replace `airlines` with `ubuntu` in the above command-lines

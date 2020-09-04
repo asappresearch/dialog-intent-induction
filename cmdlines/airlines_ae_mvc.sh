@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export PYTHONPATH=.
+
 if [[ ! -f data/airlines_ae.pth ]]; then {
     echo Please train airlines ae first
 } fi
