@@ -40,7 +40,7 @@ def main():
 
     parser.add_argument('--view1-col', type=str, default='view1')
     parser.add_argument('--view2-col', type=str, default='view2')
-    parser.add_argument('--label-col', type=str, default='tag')
+    parser.add_argument('--label-col', type=str, default='label')
     args = parser.parse_args()
     run(**args.__dict__)
 
