@@ -122,9 +122,9 @@ if __name__ == '__main__':
     parser.add_argument('--ref', type=str, required=True)
     parser.add_argument('--model-path', type=str, required=True)
     parser.add_argument('--data-path', type=str, default='./data/airlines_500_merged.csv')
-    parser.add_argument('--view1-col', type=str, default='view1_col')
-    parser.add_argument('--view2-col', type=str, default='view2_col')
-    parser.add_argument('--label-col', type=str, default='cluster_id')
+    parser.add_argument('--view1-col', type=str, default='view1')
+    parser.add_argument('--view2-col', type=str, default='view2')
+    parser.add_argument('--label-col', type=str, default='label')
     parser.add_argument('--num-clusters', type=int, help='defaults to number of supervised classes')
     parser.add_argument('--num-cluster-samples', type=int, default=10)
     parser.add_argument('--sampling-strategy', type=str,

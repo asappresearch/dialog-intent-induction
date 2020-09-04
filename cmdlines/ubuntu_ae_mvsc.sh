@@ -7,5 +7,5 @@ if [[ ! -f data/ubuntu_ae.pth ]]; then {
     exit 0
 } fi
 
-python train.py --pre-epoch 0 --num-epochs 50 --data-path data/askubuntu_processed.csv \
-    --model-path data/ubuntu_ae.pth
+python run_mvsc.py --ref ubuntu_ae_mvsc --model-path data/ubuntu_ae.pth \
+    --data-path data/askubuntu_processed.csv --mvsc-no-unk
